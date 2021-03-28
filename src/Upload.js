@@ -7,6 +7,8 @@ export class Upload extends Component {
     super(props);
     this.state = {
       files: [],
+      result: [],
+      ifPerson: "",
     };
 
     this.fileUpload = this.fileUpload.bind(this);
@@ -21,6 +23,8 @@ export class Upload extends Component {
   }
 
   async fileUpload() {
+    const photo = this.state.files["base64"];
+    const base64OfImage = photo.split(",")[1];
     const response = await fetch(
       "https://6tux3pbm47.execute-api.us-east-1.amazonaws.com/Prod/passportphoto",
       {
@@ -29,13 +33,25 @@ export class Upload extends Component {
           Accept: "application/json",
           "Content-type": "application/json",
         },
-        body: JSON.stringify(this.state.files),
+        body: JSON.stringify({ photo: base64OfImage }),
       }
     );
 
-    console.log(response);
+    const result = await response.json();
+    this.setState({ result: result.body });
+
+    const face_details = JSON.parse(this.state.result);
+
+    if (face_details["FaceDetails"][0] === undefined) {
+      this.setState({
+        ifPerson: "Sorry, Looks like you just uploaded an invalid photo!",
+      });
+    } else {
+      this.setState({ ifPerson: "Thanks for uploading your photo!" });
+    }
   }
   render() {
+    const ifPerson = this.state.ifPerson;
     return (
       <div>
         <div className="row">
@@ -53,6 +69,12 @@ export class Upload extends Component {
         <div className="row">
           <div className="col-6 offset-3">
             <img src={this.state.files.base64} width="40%" />
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-6 offset-3">
+            <strong>{ifPerson}</strong>
           </div>
         </div>
 
