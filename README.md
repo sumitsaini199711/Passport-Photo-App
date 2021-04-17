@@ -6,8 +6,6 @@ AWS Lambda: https://6tux3pbm47.execute-api.us-east-1.amazonaws.com/Prod/passport
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
-
 In the project directory, you can run:
 
 ### `yarn start`
